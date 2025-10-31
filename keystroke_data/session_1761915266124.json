@@ -1,0 +1,530 @@
+[
+    {
+        "event": "press",
+        "key": "Key.shift",
+        "time_ms": 0.0006999907782301307
+    },
+    {
+        "event": "press",
+        "key": "T",
+        "time_ms": 288.24759999406524
+    },
+    {
+        "event": "release",
+        "key": "Key.shift",
+        "time_ms": 359.9268999969354,
+        "hold_time_ms": 359.92620000615716
+    },
+    {
+        "event": "press",
+        "key": "h",
+        "time_ms": 392.1791999891866
+    },
+    {
+        "event": "release",
+        "key": "t",
+        "time_ms": 424.15449999680277,
+        "hold_time_ms": null
+    },
+    {
+        "event": "release",
+        "key": "h",
+        "time_ms": 488.16229999647476,
+        "hold_time_ms": 95.98310000728816
+    },
+    {
+        "event": "press",
+        "key": "e",
+        "time_ms": 1384.14379999449
+    },
+    {
+        "event": "release",
+        "key": "e",
+        "time_ms": 1480.124199995771,
+        "hold_time_ms": 95.98040000128094
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 1480.510499997763
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 1536.0124999861,
+        "hold_time_ms": 55.50199998833705
+    },
+    {
+        "event": "press",
+        "key": "q",
+        "time_ms": 1776.1737999971956
+    },
+    {
+        "event": "press",
+        "key": "u",
+        "time_ms": 1856.2097999965772
+    },
+    {
+        "event": "release",
+        "key": "q",
+        "time_ms": 1871.953299996676,
+        "hold_time_ms": 95.77949999948032
+    },
+    {
+        "event": "press",
+        "key": "i",
+        "time_ms": 1968.2011999975657
+    },
+    {
+        "event": "release",
+        "key": "u",
+        "time_ms": 2008.1415999884484,
+        "hold_time_ms": 151.93179999187123
+    },
+    {
+        "event": "release",
+        "key": "i",
+        "time_ms": 2088.137499988079,
+        "hold_time_ms": 119.93629999051336
+    },
+    {
+        "event": "press",
+        "key": "c",
+        "time_ms": 2120.1863999885973
+    },
+    {
+        "event": "release",
+        "key": "c",
+        "time_ms": 2224.1593999933684,
+        "hold_time_ms": 103.97300000477117
+    },
+    {
+        "event": "press",
+        "key": "k",
+        "time_ms": 2240.0972999894293
+    },
+    {
+        "event": "release",
+        "key": "k",
+        "time_ms": 2368.1470999872545,
+        "hold_time_ms": 128.04979999782518
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 2655.9704999963287
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 2727.980399999069,
+        "hold_time_ms": 72.00990000274032
+    },
+    {
+        "event": "press",
+        "key": "b",
+        "time_ms": 3088.1930999894394
+    },
+    {
+        "event": "press",
+        "key": "o",
+        "time_ms": 3184.1876999969827
+    },
+    {
+        "event": "press",
+        "key": "r",
+        "time_ms": 3216.16539999377
+    },
+    {
+        "event": "release",
+        "key": "b",
+        "time_ms": 3248.147499994957,
+        "hold_time_ms": 159.95440000551753
+    },
+    {
+        "event": "release",
+        "key": "o",
+        "time_ms": 3328.169699991122,
+        "hold_time_ms": 143.9819999941392
+    },
+    {
+        "event": "press",
+        "key": "w",
+        "time_ms": 3400.1425999886123
+    },
+    {
+        "event": "release",
+        "key": "r",
+        "time_ms": 3464.1867999889655,
+        "hold_time_ms": 248.02139999519568
+    },
+    {
+        "event": "press",
+        "key": "n",
+        "time_ms": 3560.19109999761
+    },
+    {
+        "event": "release",
+        "key": "w",
+        "time_ms": 3576.1246999900322,
+        "hold_time_ms": 175.9821000014199
+    },
+    {
+        "event": "release",
+        "key": "n",
+        "time_ms": 3680.1697999908356,
+        "hold_time_ms": 119.97869999322575
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 3848.0140999890864
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 3911.92639998917,
+        "hold_time_ms": 63.91230000008363
+    },
+    {
+        "event": "press",
+        "key": "f",
+        "time_ms": 4240.186999988509
+    },
+    {
+        "event": "release",
+        "key": "f",
+        "time_ms": 4304.166299989447,
+        "hold_time_ms": 63.979300000937656
+    },
+    {
+        "event": "press",
+        "key": "o",
+        "time_ms": 4328.189199994085
+    },
+    {
+        "event": "release",
+        "key": "o",
+        "time_ms": 4424.219199994695,
+        "hold_time_ms": 96.03000000061002
+    },
+    {
+        "event": "press",
+        "key": "x",
+        "time_ms": 4520.2943999902345
+    },
+    {
+        "event": "release",
+        "key": "x",
+        "time_ms": 4632.247399989865,
+        "hold_time_ms": 111.95299999963026
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 4767.9776000004495
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 4872.024899988901,
+        "hold_time_ms": 104.04729998845141
+    },
+    {
+        "event": "press",
+        "key": "j",
+        "time_ms": 5184.197299997322
+    },
+    {
+        "event": "release",
+        "key": "j",
+        "time_ms": 5264.176199998474,
+        "hold_time_ms": 79.97890000115149
+    },
+    {
+        "event": "press",
+        "key": "u",
+        "time_ms": 5400.259199988795
+    },
+    {
+        "event": "release",
+        "key": "u",
+        "time_ms": 5464.207199998782,
+        "hold_time_ms": 63.94800000998657
+    },
+    {
+        "event": "press",
+        "key": "m",
+        "time_ms": 5680.192899992107
+    },
+    {
+        "event": "press",
+        "key": "p",
+        "time_ms": 5760.226899990812
+    },
+    {
+        "event": "release",
+        "key": "m",
+        "time_ms": 5816.217199986568,
+        "hold_time_ms": 136.0242999944603
+    },
+    {
+        "event": "release",
+        "key": "p",
+        "time_ms": 5904.3508999893675,
+        "hold_time_ms": 144.12399999855552
+    },
+    {
+        "event": "press",
+        "key": "s",
+        "time_ms": 5992.207199989934
+    },
+    {
+        "event": "release",
+        "key": "s",
+        "time_ms": 6104.249799987883,
+        "hold_time_ms": 112.04259999794886
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 6152.046399991377
+    },
+    {
+        "event": "press",
+        "key": "o",
+        "time_ms": 6264.219499993487
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 6296.057599989581,
+        "hold_time_ms": 144.01119999820367
+    },
+    {
+        "event": "release",
+        "key": "o",
+        "time_ms": 6384.214299992891,
+        "hold_time_ms": 119.99479999940377
+    },
+    {
+        "event": "press",
+        "key": "v",
+        "time_ms": 6568.21419998596
+    },
+    {
+        "event": "release",
+        "key": "v",
+        "time_ms": 6664.224499996635,
+        "hold_time_ms": 96.01030001067556
+    },
+    {
+        "event": "press",
+        "key": "e",
+        "time_ms": 6720.313899990288
+    },
+    {
+        "event": "press",
+        "key": "r",
+        "time_ms": 6808.447199990042
+    },
+    {
+        "event": "release",
+        "key": "e",
+        "time_ms": 6840.244999999413,
+        "hold_time_ms": 119.93110000912566
+    },
+    {
+        "event": "release",
+        "key": "r",
+        "time_ms": 6944.239099990227,
+        "hold_time_ms": 135.7919000001857
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 6968.007299990859
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 7088.042999996105,
+        "hold_time_ms": 120.03570000524633
+    },
+    {
+        "event": "press",
+        "key": "t",
+        "time_ms": 7208.240199994179
+    },
+    {
+        "event": "press",
+        "key": "h",
+        "time_ms": 7296.26869999629
+    },
+    {
+        "event": "release",
+        "key": "t",
+        "time_ms": 7320.366799991461,
+        "hold_time_ms": 112.12659999728203
+    },
+    {
+        "event": "release",
+        "key": "h",
+        "time_ms": 7408.335299987812,
+        "hold_time_ms": 112.0665999915218
+    },
+    {
+        "event": "press",
+        "key": "e",
+        "time_ms": 7424.252699987846
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 7520.060999988345
+    },
+    {
+        "event": "release",
+        "key": "e",
+        "time_ms": 7528.182399997604,
+        "hold_time_ms": 103.92970000975765
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 7608.150899992324,
+        "hold_time_ms": 88.08990000397898
+    },
+    {
+        "event": "press",
+        "key": "l",
+        "time_ms": 7744.258699996863
+    },
+    {
+        "event": "release",
+        "key": "l",
+        "time_ms": 7856.279999992694,
+        "hold_time_ms": 112.02129999583121
+    },
+    {
+        "event": "press",
+        "key": "z",
+        "time_ms": 7912.267199993948
+    },
+    {
+        "event": "release",
+        "key": "z",
+        "time_ms": 8040.289199998369,
+        "hold_time_ms": 128.022000004421
+    },
+    {
+        "event": "press",
+        "key": "Key.backspace",
+        "time_ms": 8560.177599996678
+    },
+    {
+        "event": "release",
+        "key": "Key.backspace",
+        "time_ms": 8664.080299990019,
+        "hold_time_ms": 103.90269999334123
+    },
+    {
+        "event": "press",
+        "key": "a",
+        "time_ms": 8696.356599990395
+    },
+    {
+        "event": "press",
+        "key": "z",
+        "time_ms": 8848.41310000047
+    },
+    {
+        "event": "release",
+        "key": "a",
+        "time_ms": 8872.26639999426,
+        "hold_time_ms": 175.9098000038648
+    },
+    {
+        "event": "release",
+        "key": "z",
+        "time_ms": 9008.337499995832,
+        "hold_time_ms": 159.92439999536145
+    },
+    {
+        "event": "press",
+        "key": "y",
+        "time_ms": 9008.75539999106
+    },
+    {
+        "event": "release",
+        "key": "y",
+        "time_ms": 9104.374899994582,
+        "hold_time_ms": 95.61950000352226
+    },
+    {
+        "event": "press",
+        "key": "Key.space",
+        "time_ms": 9344.10959998786
+    },
+    {
+        "event": "release",
+        "key": "Key.space",
+        "time_ms": 9416.085099990596,
+        "hold_time_ms": 71.97550000273623
+    },
+    {
+        "event": "press",
+        "key": "d",
+        "time_ms": 9528.320499986876
+    },
+    {
+        "event": "release",
+        "key": "d",
+        "time_ms": 9616.317199994228,
+        "hold_time_ms": 87.99670000735205
+    },
+    {
+        "event": "press",
+        "key": "o",
+        "time_ms": 9672.316799988039
+    },
+    {
+        "event": "release",
+        "key": "o",
+        "time_ms": 9768.387899996014,
+        "hold_time_ms": 96.07110000797547
+    },
+    {
+        "event": "press",
+        "key": "g",
+        "time_ms": 9800.331299993559
+    },
+    {
+        "event": "release",
+        "key": "g",
+        "time_ms": 9904.354599988437,
+        "hold_time_ms": 104.02329999487847
+    },
+    {
+        "event": "press",
+        "key": "Key.shift",
+        "time_ms": 13296.338999993168
+    },
+    {
+        "event": "release",
+        "key": "Key.shift",
+        "time_ms": 13576.22169998649,
+        "hold_time_ms": 279.8826999933226
+    },
+    {
+        "event": "press",
+        "key": "Key.enter",
+        "time_ms": 13816.222199995536
+    },
+    {
+        "event": "release",
+        "key": "Key.enter",
+        "time_ms": 13912.260499986587,
+        "hold_time_ms": 96.03829999105074
+    }
+]

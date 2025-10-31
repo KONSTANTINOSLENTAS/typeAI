@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Databases (VERY IMPORTANT!)
+users.db
+master_features.csv
+
+# AI Model
+multi_user_model.joblib
+
+
