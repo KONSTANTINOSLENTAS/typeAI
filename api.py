@@ -13,8 +13,11 @@ from bson import ObjectId
 
 # --- 1. Configuration ---
 app = Flask(__name__)
-CORS(app)
 
+# --- CORS Configuration: Whitelisting the Frontend URL for production ---
+FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" # <--- PASTE YOUR FULL GITHUB PAGES URL HERE
+
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": [FRONTEND_URL]}})
 # --- NEW: Explicit MongoDB Configuration ---
 # 1. Get the full connection string from environment variables
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
