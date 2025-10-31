@@ -15,12 +15,21 @@ from bson import ObjectId
 app = Flask(__name__)
 CORS(app)
 
-# MongoDB Configuration: Uses Render's DATABASE_URL environment variable
+# --- NEW: Robust MongoDB Configuration ---
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'default-fallback-secret-key')
 
+# 1. Ensure the database name is ALWAYS in the URI, even if Render misses it.
+if not "/?" in MONGO_URI and not MONGO_URI.endswith('/?'):
+    # Assumes a default database name of 'typing_db' if none is found
+    if MONGO_URI.endswith('/'):
+        MONGO_URI = MONGO_URI.rstrip('/')
+    MONGO_URI = MONGO_URI.replace("?", "/typing_db?", 1)
+
 client = MongoClient(MONGO_URI)
-db = client.get_default_database() # The DB name is part of the URI
+db = client.get_default_database() 
+# --- END NEW BLOCK ---
+
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
