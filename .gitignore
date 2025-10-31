@@ -10,4 +10,5 @@ master_features.csv
 # AI Model
 multi_user_model.joblib
 
-
+# GitHub files (if any)
+README.md
