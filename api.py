@@ -15,23 +15,26 @@ from bson import ObjectId
 app = Flask(__name__)
 CORS(app)
 
-# --- NEW: Robust MongoDB Configuration ---
+# --- NEW: Explicit MongoDB Configuration ---
+# 1. Get the full connection string from environment variables
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'default-fallback-secret-key')
 
-# 1. Ensure the database name is ALWAYS in the URI, even if Render misses it.
-if not "/?" in MONGO_URI and not MONGO_URI.endswith('/?'):
-    # Assumes a default database name of 'typing_db' if none is found
-    if MONGO_URI.endswith('/'):
-        MONGO_URI = MONGO_URI.rstrip('/')
-    MONGO_URI = MONGO_URI.replace("?", "/typing_db?", 1)
+# 2. Extract the database name from the URL if possible, or set a default
+# We need the name 'typing_db' explicitly for the client object.
+DB_NAME = 'typing_db' 
 
+# 3. Initialize the MongoClient with the full URI
 client = MongoClient(MONGO_URI)
-db = client.get_default_database() 
+
+# 4. Explicitly select the database using the name
+# This line bypasses the complex URI parsing that was failing.
+db = client[DB_NAME] 
 # --- END NEW BLOCK ---
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
+# (rest of the file is unchanged)
 
 # Collections (MongoDB "tables")
 users_collection = db.users
