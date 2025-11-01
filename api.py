@@ -15,7 +15,8 @@ app = Flask(__name__)
 
 # --- CORS Configuration: Whitelisting the Frontend URL for production ---
 FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" # <--- YOUR FULL GITHUB PAGES URL
-CORS(app, origins=[FRONTEND_URL], supports_credentials=True)
+# --- TEMPORARY FIX: ALLOW ALL ORIGINS FOR TESTING ---
+CORS(app, origins=['*'], supports_credentials=True)
 
 # MongoDB Configuration: Uses Render's DATABASE_URL environment variable
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
