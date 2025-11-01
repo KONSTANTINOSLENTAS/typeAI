@@ -3,7 +3,6 @@ import numpy as np
 import joblib
 import os
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from pymongo import MongoClient
@@ -13,11 +12,18 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 # --- 1. Configuration ---
 app = Flask(__name__)
 
-# --- CORS Configuration: The simplest working fix ---
+# --- Final CORS Fix: Manual Header Injection ---
 FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" 
-# This simple setup avoids conflicts with Render's internal proxy
-CORS(app, origins=[FRONTEND_URL])
-# Note: We removed supports_credentials=True because JWT/CORS often conflict on free tiers
+
+# Manually inject CORS headers into every response
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = FRONTEND_URL
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+# --- END Final CORS Fix ---
 
 # MongoDB Configuration: Uses Render's DATABASE_URL environment variable
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
