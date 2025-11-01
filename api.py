@@ -2,22 +2,31 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
-from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
+from flask import Flask, request, jsonify
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
-from flask_cors import CORS
 
-# --- 1. Configuration (Final Stable Version) ---
+# --- 1. Configuration ---
 app = Flask(__name__)
 
-# --- CORS Configuration (Keep the explicit whitelist) ---
-FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" 
-CORS(app, origins=[FRONTEND_URL], supports_credentials=True)
+# --- FINAL CORS CONFIGURATION: Allow Both GitHub Pages Origins ---
 
-# --- NEW: Stable MongoDB Connection Setup ---
+# 1. Full Path Origin (e.g., https://user.github.io/repo-name)
+FRONTEND_FULL_PATH = "https://konstantinoslendas.github.io/typing-ai-frontend"
+
+# 2. Root Origin (e.g., https://user.github.io)
+FRONTEND_ROOT = "https://konstantinoslendas.github.io" 
+
+# Whitelist both URLs in the list
+CORS(app, origins=[FRONTEND_FULL_PATH, FRONTEND_ROOT], supports_credentials=True)
+
+# ... rest of the file continues below ...
+
+# MongoDB Configuration: Uses Render's DATABASE_URL environment variable
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'default-fallback-secret-key')
 
@@ -27,6 +36,7 @@ db_instance = None
 users_collection = None
 samples_collection = None
 
+# Security and JWT setup
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
@@ -45,9 +55,9 @@ def get_db():
     
     if db_instance is None:
         try:
-            client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000) # Reduced timeout
-            # Explicitly select the database using the name 'typing_db'
-            db_instance = client.get_database('typing_db') 
+            client = MongoClient(MONGO_URI)
+            # Use the default database specified in the URI (e.g., 'typing_db')
+            db_instance = client.get_default_database()
             
             # Assign collections after successful connection
             users_collection = db_instance.users
@@ -59,28 +69,7 @@ def get_db():
             
     return db_instance
 
-# --- 3. Model configuration ---
-MODEL_FILE = "multi_user_model.joblib"
-MIN_SAMPLES_TO_TRAIN = 10
-model = None
-label_encoder = LabelEncoder()
-model_columns = []
-
-# --- 4. Database Lazy Initialization ---
-def get_db():
-    global client, db_instance, users_collection, samples_collection
-    if db_instance is None:
-        try:
-            client = MongoClient(MONGO_URI)
-            db_instance = client.get_default_database()
-            users_collection = db_instance.users
-            samples_collection = db_instance.samples
-        except Exception as e:
-            print(f"FATAL: Could not connect to MongoDB: {e}")
-            raise ConnectionError("Database initialization failed.") from e
-    return db_instance
-
-# --- 5. Feature Engineering ---
+# --- 3. Feature Engineering ---
 def calculate_global_features(events_list):
     df = pd.DataFrame(events_list)
     release_events = df[df['event'] == 'release'].dropna(subset=['hold_time_ms'])
@@ -91,42 +80,45 @@ def calculate_global_features(events_list):
         'mean_hold_time': release_events['hold_time_ms'].mean(),
         'std_hold_time': release_events['std_hold_time'].std(),
         'mean_pp_latency': press_events['pp_latency'].mean(),
-        'std_pp_latency': press_events['pp_latency'].std(),
+        'std_pp_latency': press_events['std_pp_latency'].std(),
         'typing_speed_kps': len(press_events) / (df['time_ms'].max() / 1000)
     }
     return {k: v if pd.notna(v) else 0 for k, v in features.items()}
 
-# --- 6. Model Builder ---
+# --- 4. Model Builder ---
 def load_model_from_db():
+    """Reads all samples from DB and rebuilds the AI model in memory."""
     global model, label_encoder, model_columns
+    
     try:
-        get_db()
+        get_db() # Ensure connection is active
         all_samples = list(samples_collection.find({}))
-        if not all_samples or len(all_samples) < MIN_SAMPLES_TO_TRAIN:
-            return False
-
+        if not all_samples: return False
         df = pd.DataFrame(all_samples)
+        
+        if len(df) < MIN_SAMPLES_TO_TRAIN: return False
+
         X = df.drop(columns=['_id', 'user_id', 'username', 'sample_type'])
-        X['accuracy'] = X['accuracy'].fillna(1.0)
         y_labels = df['username']
+        X['accuracy'] = X['accuracy'].fillna(1.0)
+
         model_columns = X.columns.tolist()
         label_encoder = LabelEncoder()
         y = label_encoder.fit_transform(y_labels)
+
         model = RandomForestClassifier(n_estimators=100, random_state=42)
         model.fit(X, y)
         print("Model rebuilt successfully from MongoDB.")
         return True
+
     except Exception as e:
-        print(f"Error during model rebuild: {e}")
+        print(f"Error during on-the-fly model rebuild: {e}")
         return False
 
-# --- 7. Preflight Handler for any OPTIONS request ---
-@app.route("/<path:path>", methods=["OPTIONS"])
-def handle_options(path):
-    response = make_response()
-    return response
 
-# --- 8. API Routes ---
+# --- 5. API Routes ---
+
+# Must call get_db() at the start of every route that uses the database
 @app.route("/status", methods=["GET"])
 def get_status():
     try:
@@ -135,6 +127,7 @@ def get_status():
         return jsonify({"model_ready": model_ready})
     except Exception:
         return jsonify({"model_ready": False})
+
 
 @app.route("/users", methods=["GET"])
 def get_user_stats():
@@ -154,6 +147,7 @@ def signup():
     username, password = data.get('username'), data.get('password')
     if not username or not password: return jsonify({"error": "Missing username or password"}), 400
     if users_collection.find_one({"username": username}): return jsonify({"error": "Username already exists"}), 400
+    
     password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
     users_collection.insert_one({"username": username, "password_hash": password_hash})
     return jsonify({"status": "user created", "username": username})
@@ -176,10 +170,13 @@ def add_sample():
     username = get_jwt_identity()
     user = users_collection.find_one({"username": username})
     if not user: return jsonify({"error": "User not found"}), 404
+            
     data = request.json
     events, accuracy, sample_type = data.get('events'), data.get('accuracy'), data.get('sample_type')
     if not events: return jsonify({"error": "Missing 'events' data"}), 400
+    
     features = calculate_global_features(events)
+    
     sample_doc = {
         "username": username,
         "sample_type": sample_type,
@@ -197,6 +194,8 @@ def add_sample():
 @app.route("/train", methods=["POST"])
 @jwt_required()
 def train_model():
+    global model, label_encoder, model_columns
+    
     if load_model_from_db():
         return jsonify({"status": "model trained", "users": label_encoder.classes_.tolist()})
     else:
@@ -205,32 +204,35 @@ def train_model():
 @app.route("/predict", methods=["POST"])
 def predict():
     global model, label_encoder, model_columns
-    if model is None:
+    
+    if model is None: 
         if not load_model_from_db():
             return jsonify({"error": "Model is not trained."}), 400
+
     data = request.json
     events = data.get('events')
     if not events: return jsonify({"error": "No 'events' data provided"}), 400
+
     features = calculate_global_features(events)
     features['accuracy'] = 1.0
-    live_df = pd.DataFrame([features]).reindex(columns=model_columns).fillna(0)
+    
+    live_df = pd.DataFrame([features])
+    live_df = live_df.reindex(columns=model_columns).fillna(0)
+    
     probabilities = model.predict_proba(live_df)
     confidence = np.max(probabilities)
     prediction_index = np.argmax(probabilities, axis=1)
     predicted_user = label_encoder.inverse_transform(prediction_index)
+    
     return jsonify({"predicted_user": predicted_user[0], "confidence": float(confidence)})
 
 @app.route("/accuracy_leaderboard", methods=["GET"])
 def get_accuracy_leaderboard():
     try:
         get_db()
-        pipeline = [
-            {"$match": {"sample_type": "diverse", "accuracy": {"$ne": None}}},
-            {"$group": {"_id": "$username", "avg_accuracy": {"$avg": "$accuracy"}}},
-            {"$sort": {"avg_accuracy": -1}}
-        ]
+        pipeline = [{"$match": {"sample_type": "diverse", "accuracy": {"$ne": None}}}, {"$group": {"_id": "$username", "avg_accuracy": {"$avg": "$accuracy"}}}, {"$sort": {"avg_accuracy": -1}}]
         stats = list(samples_collection.aggregate(pipeline))
-        stats = [{"username": s["_id"], "avg_accuracy": s["avg_accuracy"]} for s in stats]
+        stats = [{"username": s["_id"], "avg_accuracy": avg_acc} for s, avg_acc in [(d["_id"], d["avg_accuracy"]) for d in stats]]
         return jsonify(stats)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -241,11 +243,15 @@ def get_user_detail_stats(username):
         get_db()
         user_samples = list(samples_collection.find({"username": {"$regex": f"^{username}$", "$options": "i"}}))
         if not user_samples: return jsonify({"error": "User not found"}), 404
+        
         df = pd.DataFrame(user_samples)
+        
         avg_kps = df['typing_speed_kps'].mean()
         wpm = (avg_kps * 60) / 5
+        
         diverse_samples = df.dropna(subset=['accuracy'])
         avg_accuracy = diverse_samples['accuracy'].mean() if not diverse_samples.empty else None
+
         stats = {
             "username": username,
             "total_samples": len(df),
@@ -260,7 +266,7 @@ def get_user_detail_stats(username):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# --- 9. Run Server ---
+# --- 6. Run the Server ---
 if __name__ == "__main__":
-    print(f"Starting Flask server at http://0.0.0.0:{os.environ.get('PORT', 5000)}")
+    print(f"Starting Flask server at http://127.0.0.1:5000")
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
