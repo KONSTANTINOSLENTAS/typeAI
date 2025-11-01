@@ -10,31 +10,54 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 from flask_cors import CORS
 
-# --- 1. Configuration ---
+# --- 1. Configuration (Final Stable Version) ---
 app = Flask(__name__)
 
-# --- 1a. CORS Configuration ---
-FRONTEND_ROOT = "https://konstantinoslendas.github.io"
-FRONTEND_FULL_PATH = "https://konstantinoslendas.github.io/typing-ai-frontend"
+# --- CORS Configuration (Keep the explicit whitelist) ---
+FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" 
+CORS(app, origins=[FRONTEND_URL], supports_credentials=True)
 
-# Enable CORS for our frontends
-CORS(app,
-     origins=[FRONTEND_ROOT, FRONTEND_FULL_PATH],
-     supports_credentials=True,
-     methods=["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
-     allow_headers=["Content-Type", "Authorization"])
-
-# --- 2. Database and JWT Config ---
+# --- NEW: Stable MongoDB Connection Setup ---
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'default-fallback-secret-key')
 
+# Lazy Initialization Variables
 client = None
-db_instance = None
+db_instance = None 
 users_collection = None
 samples_collection = None
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
+
+# Model configuration
+MODEL_FILE = "multi_user_model.joblib"
+MIN_SAMPLES_TO_TRAIN = 10
+
+model = None
+label_encoder = LabelEncoder()
+model_columns = []
+
+# --- 2. Database Initialization (Lazy Loading) ---
+def get_db():
+    """Initializes MongoDB connection and returns collections."""
+    global client, db_instance, users_collection, samples_collection
+    
+    if db_instance is None:
+        try:
+            client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000) # Reduced timeout
+            # Explicitly select the database using the name 'typing_db'
+            db_instance = client.get_database('typing_db') 
+            
+            # Assign collections after successful connection
+            users_collection = db_instance.users
+            samples_collection = db_instance.samples
+        except Exception as e:
+            print(f"FATAL: Could not connect to MongoDB: {e}")
+            # Re-raise error to crash worker if DB is truly unavailable
+            raise ConnectionError("Database initialization failed.") from e
+            
+    return db_instance
 
 # --- 3. Model configuration ---
 MODEL_FILE = "multi_user_model.joblib"
