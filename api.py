@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
-from flask_cors import CORS
 from flask import Flask, request, jsonify
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
@@ -15,14 +14,24 @@ app = Flask(__name__)
 
 # --- FINAL CORS CONFIGURATION: Allow Both GitHub Pages Origins ---
 
-# 1. Full Path Origin (e.g., https://user.github.io/repo-name)
+# --- Final CORS Fix: Manual Header Injection ---
+FRONTEND_ROOT = "https://konstantinoslendas.github.io" 
 FRONTEND_FULL_PATH = "https://konstantinoslendas.github.io/typing-ai-frontend"
 
-# 2. Root Origin (e.g., https://user.github.io)
-FRONTEND_ROOT = "https://konstantinoslendas.github.io" 
+@app.after_request
+def add_cors_headers(response):
+    # Determine the origin of the request
+    origin = request.headers.get('Origin')
 
-# Whitelist both URLs in the list
-CORS(app, origins=[FRONTEND_FULL_PATH, FRONTEND_ROOT], supports_credentials=True)
+    # Check if the origin is one of our two whitelisted domains
+    if origin in [FRONTEND_ROOT, FRONTEND_FULL_PATH]:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+
+    return response
+# --- END Final CORS Fix ---
 
 # ... rest of the file continues below ...
 
