@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+from flask_cors import CORS
 from flask import Flask, request, jsonify
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
@@ -12,18 +13,18 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 # --- 1. Configuration ---
 app = Flask(__name__)
 
-# --- Final CORS Fix: Manual Header Injection ---
-FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" 
+# --- FINAL CORS CONFIGURATION: Allow Both GitHub Pages Origins ---
 
-# Manually inject CORS headers into every response
-@app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = FRONTEND_URL
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-    response.headers['Access-Control-Allow-Credentials'] = 'true'
-    return response
-# --- END Final CORS Fix ---
+# 1. Full Path Origin (e.g., https://user.github.io/repo-name)
+FRONTEND_FULL_PATH = "https://konstantinoslendas.github.io/typing-ai-frontend"
+
+# 2. Root Origin (e.g., https://user.github.io)
+FRONTEND_ROOT = "https://konstantinoslendas.github.io" 
+
+# Whitelist both URLs in the list
+CORS(app, origins=[FRONTEND_FULL_PATH, FRONTEND_ROOT], supports_credentials=True)
+
+# ... rest of the file continues below ...
 
 # MongoDB Configuration: Uses Render's DATABASE_URL environment variable
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
