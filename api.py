@@ -14,25 +14,21 @@ from bson import ObjectId
 # --- 1. Configuration ---
 app = Flask(__name__)
 
-# --- CORS Configuration: Whitelisting the Frontend URL for production ---
-FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" # <--- PASTE YOUR FULL GITHUB PAGES URL HERE
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": [FRONTEND_URL]}})
-# --- NEW: Explicit MongoDB Configuration ---
-# 1. Get the full connection string from environment variables
+# --- CORS Configuration: Simplest Production Whitelist ---
+# Paste your definitive GitHub Pages URL here:
+FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" 
+
+# This is the most reliable way to whitelist a single domain in Flask-CORS
+CORS(app, origins=[FRONTEND_URL], supports_credentials=True)
+
+# --- MongoDB Configuration: Ensure the database is always available ---
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'default-fallback-secret-key')
 
-# 2. Extract the database name from the URL if possible, or set a default
-# We need the name 'typing_db' explicitly for the client object.
+# 2. Explicitly define the database name for the client connection
 DB_NAME = 'typing_db' 
-
-# 3. Initialize the MongoClient with the full URI
 client = MongoClient(MONGO_URI)
-
-# 4. Explicitly select the database using the name
-# This line bypasses the complex URI parsing that was failing.
-db = client[DB_NAME] 
-# --- END NEW BLOCK ---
+db = client[DB_NAME]
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
