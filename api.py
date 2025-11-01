@@ -13,12 +13,11 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 # --- 1. Configuration ---
 app = Flask(__name__)
 
-# --- CORS Configuration: Whitelisting the Frontend URL for production ---
-FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" # <--- YOUR FULL GITHUB PAGES URL
-# --- TEMPORARY FIX: ALLOW ALL ORIGINS FOR TESTING ---
-# --- FINAL, SECURE CORS CONFIGURATION ---
+# --- CORS Configuration: The simplest working fix ---
 FRONTEND_URL = "https://konstantinoslendas.github.io/typing-ai-frontend" 
-CORS(app, origins=[FRONTEND_URL], supports_credentials=True)
+# This simple setup avoids conflicts with Render's internal proxy
+CORS(app, origins=[FRONTEND_URL])
+# Note: We removed supports_credentials=True because JWT/CORS often conflict on free tiers
 
 # MongoDB Configuration: Uses Render's DATABASE_URL environment variable
 MONGO_URI = os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/typing_db')
